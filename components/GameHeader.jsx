@@ -1,4 +1,36 @@
+import { useEffect } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSequence,
+    withTiming,
+} from 'react-native-reanimated';
+
+// Affiche une valeur qui "rebondit" à chaque changement
+const AnimatedValue = ({ value }) => {
+    const scale = useSharedValue(1);
+
+    useEffect(() => {
+        scale.value = withSequence(
+            withTiming(1.4, { duration: 120 }),
+            withTiming(1, { duration: 120 })
+        );
+    }, [value]);
+
+    const style = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+    }));
+
+    return (
+        <Animated.Text
+            style={style}
+            className="text-[32px] font-bold text-indigo-400"
+        >
+            {value}
+        </Animated.Text>
+    );
+};
 
 export const GameHeader = ({ score, moves, onReset }) => {
     return (
@@ -14,9 +46,7 @@ export const GameHeader = ({ score, moves, onReset }) => {
                         Score
                     </Text>
 
-                    <Text className="text-[32px] font-bold text-indigo-400">
-                        {score}
-                    </Text>
+                    <AnimatedValue value={score} />
                 </View>
 
                 <View className="flex flex-col items-center gap-[5px]">
@@ -24,9 +54,7 @@ export const GameHeader = ({ score, moves, onReset }) => {
                         Moves
                     </Text>
 
-                    <Text className="text-[32px] font-bold text-indigo-400">
-                        {moves}
-                    </Text>
+                    <AnimatedValue value={moves} />
                 </View>
             </View>
 

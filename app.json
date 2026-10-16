@@ -28,7 +28,8 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kersen_890.gameapp"
     }
   }
 }

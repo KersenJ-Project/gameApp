@@ -1,5 +1,6 @@
 import '../global.css';
 import { View, ScrollView } from 'react-native';
+import Animated, { ZoomIn } from 'react-native-reanimated';
 
 import { useGameLogic } from 'hooks/useGameLogic';
 import { cardValues } from 'assets/cardValues';
@@ -13,6 +14,7 @@ export default function Index() {
         cards,
         score,
         moves,
+        gameId,
         isGameComplete,
         initializeGame,
         handleCardPress,
@@ -29,18 +31,22 @@ export default function Index() {
                 onReset={initializeGame}
             />
 
-            {isGameComplete && (
-                <WinMessage moves={moves} />
-            )}
+            {isGameComplete && <WinMessage moves={moves} />}
 
-            <View className="w-full max-w-[600px] flex-row flex-wrap justify-center gap-[10px]">
-                {cards.map((card) => (
-                    <View key={card.id} className="w-[22%]">
-                        <Card
-                            card={card}
-                            onPress={handleCardPress}
-                        />
-                    </View>
+            {/* Le key change à chaque nouvelle partie : la grille est remontée
+                et l'animation d'entrée en cascade est rejouée */}
+            <View
+                key={gameId}
+                className="w-full max-w-[600px] flex-row flex-wrap justify-center gap-[10px]"
+            >
+                {cards.map((card, index) => (
+                    <Animated.View
+                        key={card.id}
+                        className="w-[22%]"
+                        entering={ZoomIn.delay(index * 40).duration(300)}
+                    >
+                        <Card card={card} onPress={handleCardPress} />
+                    </Animated.View>
                 ))}
             </View>
         </ScrollView>
